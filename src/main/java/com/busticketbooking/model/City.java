@@ -1,4 +1,5 @@
 package com.busticketbooking.model;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,8 +11,8 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "bus_station")
-public class BusStation {
+@Table(name = "city")
+public class City {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,9 +20,9 @@ public class BusStation {
 
     private String name;
 
-    @ManyToMany(mappedBy = "busStations", fetch = FetchType.LAZY)
-    private Set<City> cities;
-
-    @OneToMany(mappedBy = "busStation", cascade = CascadeType.ALL)
-    private Set<Route> routes;
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(name = "city_bus_station",
+            joinColumns = @JoinColumn(name = "city_id"),
+            inverseJoinColumns = @JoinColumn(name = "bus_station_id"))
+    private Set<BusStation> busStations;
 }
