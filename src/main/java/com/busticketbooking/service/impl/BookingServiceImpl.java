@@ -3,6 +3,7 @@ package com.busticketbooking.service.impl;
 import com.busticketbooking.DTO.BookingDTO;
 import com.busticketbooking.exception.ResourceNotFoundException;
 import com.busticketbooking.model.Booking;
+import com.busticketbooking.model.Ticket;
 import com.busticketbooking.repository.BookingRepository;
 import com.busticketbooking.service.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.busticketbooking.service.impl.TicketServiceImpl.convertToTicketDTO;
+import static com.busticketbooking.service.impl.UserServiceImpl.convertToUser;
+import static com.busticketbooking.service.impl.UserServiceImpl.convertToUserDTO;
 
 //import static com.busticketbooking.service.impl.UserServiceImpl.convertToUser;
 
@@ -29,7 +36,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingDTO createBooking(BookingDTO bookingDTO) {
-        Booking booking = convertToBookingEntity(bookingDTO);
+        Booking booking = convertToBooking(bookingDTO);
         booking = bookingRepository.save(booking);
         return convertToBookingDTO(booking);
     }
@@ -38,12 +45,22 @@ public class BookingServiceImpl implements BookingService {
     public BookingDTO updateBooking(int id, BookingDTO updatedBookingDTO) {
         Booking existingBooking = bookingRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Booking", "ID", (long) id));
-
-      //  existingBooking.setUser(convertToUser(updatedBookingDTO.getUserId()));
-     //  existingBooking.setTickets(convertToTicket(updatedBookingDTO.getTickets()));
         existingBooking.setBookingDate(updatedBookingDTO.getBookingDate());
 
+        if (updatedBookingDTO.getUserDTO() != null) {
+            existingBooking.setUser(convertToUser(updatedBookingDTO.getUserDTO()));
+        }
+
+        if (updatedBookingDTO.getTicketDTOs() != null) {
+            List<Ticket> updatedTickets = updatedBookingDTO.getTicketDTOs().stream()
+                    .map(TicketServiceImpl::convertToTicket)
+                    .collect(Collectors.toList());
+            existingBooking.setTickets(updatedTickets);
+        }
+
+        // Set modifiedAt to current time
         existingBooking.setModifiedAt(LocalDateTime.now());
+
         existingBooking = bookingRepository.save(existingBooking);
 
         return convertToBookingDTO(existingBooking);
@@ -69,18 +86,25 @@ public class BookingServiceImpl implements BookingService {
     }
 
     // Conversion methods
-
     private BookingDTO convertToBookingDTO(Booking booking) {
         BookingDTO bookingDTO = new BookingDTO();
         bookingDTO.setBookingId(booking.getBookingId());
-      //  bookingDTO.setUserId(booking.getUser() != null ? booking.getUser().getUserId() : 0);
+        bookingDTO.setUserDTO(convertToUserDTO(booking.getUser()));
+        bookingDTO.setTicketDTOs(booking.getTickets().stream()
+                .map(TicketServiceImpl::convertToTicketDTO)
+                .collect(Collectors.toList()));
+        bookingDTO.setBookingDate(booking.getBookingDate());
         return bookingDTO;
     }
 
-    private Booking convertToBookingEntity(BookingDTO bookingDTO) {
+    private Booking convertToBooking(BookingDTO bookingDTO) {
         Booking booking = new Booking();
         booking.setBookingId(bookingDTO.getBookingId());
-        // Set User if needed
+        booking.setUser(convertToUser(bookingDTO.getUserDTO()));
+        booking.setTickets(bookingDTO.getTicketDTOs().stream()
+                .map(TicketServiceImpl::convertToTicket)
+                .collect(Collectors.toList()));
+        booking.setBookingDate(bookingDTO.getBookingDate());
         return booking;
     }
 }

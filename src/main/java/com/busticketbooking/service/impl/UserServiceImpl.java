@@ -61,11 +61,11 @@ public class UserServiceImpl implements UserService {
     public Page<UserDTO> getAllUsers(int page, int size) {
         PageRequest pageable = PageRequest.of(page, size);
         Page<User> users = userRepository.findAll(pageable);
-        return users.map(this::convertToUserDTO);
+        return users.map(UserServiceImpl::convertToUserDTO);
     }
 
     // Conversion methods
-    private  UserDTO convertToUserDTO(User user) {
+    static UserDTO convertToUserDTO(User user) {
         UserDTO userDTO = new UserDTO();
         userDTO.setUserId(user.getUserId());
         userDTO.setEmail(user.getEmail());
@@ -74,7 +74,7 @@ public class UserServiceImpl implements UserService {
         return userDTO;
     }
 
-    private static User convertToUser(UserDTO userDTO) {
+     static User convertToUser(UserDTO userDTO) {
         User user = new User();
         user.setUserId(userDTO.getUserId());
         user.setEmail(userDTO.getEmail());
