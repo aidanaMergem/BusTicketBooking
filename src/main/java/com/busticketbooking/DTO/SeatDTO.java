@@ -5,6 +5,5 @@ import lombok.Data;
 public class SeatDTO {
     private int seatId;
     private int seatNumber;
-    private int busId;
-
+  //  private int busId;
 }

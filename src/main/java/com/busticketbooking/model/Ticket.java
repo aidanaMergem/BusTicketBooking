@@ -24,9 +24,6 @@ public class Ticket {
     @JoinColumn(name = "passenger_id")
     private Passenger passenger;
 
-    @ManyToOne
-    @JoinColumn(name = "booking_id")
-    private Booking booking;
     @Column(name = "createdAt", nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 

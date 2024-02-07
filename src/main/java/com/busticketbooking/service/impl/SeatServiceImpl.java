@@ -37,9 +37,7 @@ public class SeatServiceImpl implements SeatService {
         public SeatDTO updateSeat(int id, SeatDTO updatedSeatDTO) {
             Seat existingSeat = seatRepo.findById(id)
                     .orElseThrow(() -> new ResourceNotFoundException("Seat", "ID", (long) id));
-
-            // Update existingSeat fields if needed
-
+            existingSeat.setSeatNumber(updatedSeatDTO.getSeatNumber());
             existingSeat.setModifiedAt(LocalDateTime.now());
             existingSeat = seatRepo.save(existingSeat);
 
