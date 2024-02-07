@@ -1,6 +1,7 @@
 package com.busticketbooking.model;
 
 import jakarta.persistence.*;
+import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,22 +13,34 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
 public class Ticket {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int ticketId;
-
-    @Column(nullable = false)
-    private double price;
+    private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "passenger_id")
-    private Passenger passenger;
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    @Column(name = "createdAt", nullable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
+    @ManyToOne
+    @JoinColumn(name = "bus_id")
+    private Bus bus;
 
-    @Column(name = "modifiedAt")
-    private LocalDateTime modifiedAt;
+    @Column(nullable = false)
+    private LocalDateTime bookingTime;
+
+    @Column(nullable = false)
+    private String sourceCity;
+
+    @Column(nullable = false)
+    private String destinationCity;
+
+    @Column(nullable = false)
+    private LocalDateTime journeyDate;
+
+    @Column(nullable = false)
+    private int seatNumber;
 
 }
