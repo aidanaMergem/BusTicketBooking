@@ -38,6 +38,7 @@ public class SeatServiceImpl implements SeatService {
             Seat existingSeat = seatRepo.findById(id)
                     .orElseThrow(() -> new ResourceNotFoundException("Seat", "ID", (long) id));
             existingSeat.setSeatNumber(updatedSeatDTO.getSeatNumber());
+            existingSeat.setAvailable(updatedSeatDTO.isAvailable());
             existingSeat.setModifiedAt(LocalDateTime.now());
             existingSeat = seatRepo.save(existingSeat);
 
@@ -69,6 +70,7 @@ public class SeatServiceImpl implements SeatService {
             SeatDTO seatDTO = new SeatDTO();
             seatDTO.setSeatId(seat.getSeatId());
             seatDTO.setSeatNumber(seat.getSeatNumber());
+            seatDTO.setAvailable(seat.isAvailable());
           //  seatDTO.setBusId(seat.getBus() != null ? seat.getBus().getBusId() : 0);
             return seatDTO;
         }
@@ -77,6 +79,7 @@ public class SeatServiceImpl implements SeatService {
             Seat seat = new Seat();
             seat.setSeatId(seatDTO.getSeatId());
             seat.setSeatNumber(seatDTO.getSeatNumber());
+            seat.setAvailable(seatDTO.isAvailable());
             return seat;
         }
     }

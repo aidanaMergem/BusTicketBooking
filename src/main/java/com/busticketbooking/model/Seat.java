@@ -22,6 +22,8 @@ public class Seat {
 
     @Column(name = "seat_number", nullable = false)
     private int seatNumber;
+    @Column(name = "is_available", nullable = false)
+    private boolean isAvailable;
 
     @Column(name = "createdAt", nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
