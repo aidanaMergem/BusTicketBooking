@@ -42,13 +42,7 @@ public class TicketController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<TicketDTO>> getAllTickets() {
-        List<TicketDTO> tickets = ticketService.getAllTickets();
-        return ResponseEntity.ok(tickets);
-    }
-
-    @GetMapping
-    public ResponseEntity<Page<TicketDTO>> getAllTicketsPageable(
+    public ResponseEntity<Page<TicketDTO>> getAllTickets(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         Page<TicketDTO> ticketPage = ticketService.getAllTickets(page, size);
